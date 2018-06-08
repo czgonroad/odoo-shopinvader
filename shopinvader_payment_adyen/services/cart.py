@@ -15,8 +15,8 @@ class CartService(Component):
             self, provider_name, transaction, cart, params):
         if provider_name == 'adyen' and transaction.url:
             cart = self._get()
-            res = self._to_json(cart)
-            res['payment']['adyen_params'] = {
+            res = self._to_json_response(cart)
+            res['data']['payment']['adyen_params'] = {
                 'MD': transaction.meta['MD'],
                 'PaReq': transaction.meta['PaReq'],
                 'TermUrl': params['return_url'],

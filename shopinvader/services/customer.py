@@ -83,7 +83,7 @@ class CustomerService(Component):
                     'partner_shipping_id': self.partner.id,
                     'partner_invoice_id': self.partner.id,
                     })
-            return cart_service._to_json(cart)['data']
+            return cart_service._to_json_response(cart)['data']
         else:
             return {}
 

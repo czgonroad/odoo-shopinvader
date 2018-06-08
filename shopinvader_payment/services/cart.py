@@ -124,7 +124,7 @@ class CartService(Component):
             provider_name, transaction, cart, params)
 
     def _to_json(self, cart):
-        res = super(CartService, self)._to_json(cart)
+        res = super(CartService, self)._to_json(cart)[0]
         if cart:
             methods = self._get_available_payment_mode()
             selected_method = {}
@@ -140,7 +140,7 @@ class CartService(Component):
                 'selected_method': selected_method,
                 'amount': cart.amount_total,
                 }
-        return res
+        return [res]
 
     def _prepare_payment(self, method):
         return {

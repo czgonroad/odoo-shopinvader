@@ -28,7 +28,7 @@ class CartService(Component):
     def search(self):
         """Return the cart that have been set in the session or
            search an existing cart for the current partner"""
-        return self._to_json(self._get())
+        return self._to_json_response(self._get())
 
     def update(self, **params):
         response = self._update(params)
@@ -42,7 +42,7 @@ class CartService(Component):
         elif response.get('redirect_to'):
             return response
         else:
-            return self._to_json(cart)
+            return self._to_json_response(cart)
 
     def add_item(self, **params):
         cart = self._get()
@@ -55,20 +55,20 @@ class CartService(Component):
         else:
             vals = self._prepare_cart_item(params, cart)
             self.env['sale.order.line'].create(vals)
-        return self._to_json(cart)
+        return self._to_json_response(cart)
 
     def update_item(self, **params):
         item = self._get_cart_item(params)
         item.product_uom_qty = params['item_qty']
         item.reset_price_tax()
         cart = self._get()
-        return self._to_json(cart)
+        return self._to_json_response(cart)
 
     def delete_item(self, **params):
         item = self._get_cart_item(params)
         item.unlink()
         cart = self._get()
-        return self._to_json(cart)
+        return self._to_json_response(cart)
 
     # Validator
     def _validator_search(self):
@@ -178,10 +178,10 @@ class CartService(Component):
         else:
             return step
 
-    def _to_json(self, cart):
+    def _to_json_response(self, cart):
         if not cart:
             return {'data': {}, 'store_cache': {'cart': {}}}
-        res = super(CartService, self)._to_json(cart)[0]
+        res = self._to_json(cart)[0]
         return {
             'data': res,
             'set_session': {'cart_id': res['id']},
@@ -231,7 +231,7 @@ class CartService(Component):
 
     def _confirm_cart(self, cart):
         cart.action_confirm_cart()
-        res = self._to_json(cart)
+        res = self._to_json_response(cart)
         res.update({
             'store_cache': {'last_sale': res['data'], 'cart': {}},
             'set_session': {'cart_id': 0},
